@@ -1,0 +1,12 @@
+/.local/
+/artifacts/
+/dist/
+/backups/
+/VoiceWinBridge.exe
+/settings.json
+/debug.log*
+**/artifacts/
+**/settings.json
+**/debug.log*
+*.pdb
+源码/VoiceWinBridge.exe
