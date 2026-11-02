@@ -15,6 +15,7 @@ internal sealed class BridgeSettings
 
     [DataMember] public bool EnableWin { get; set; }
     [DataMember] public bool EnableRightAlt { get; set; }
+    [DataMember] public bool EnableFileLogging { get; set; }
     [DataMember] public int HoldMilliseconds { get; set; }
     [DataMember] public string InstallDirectory { get; set; }
     [IgnoreDataMember] public bool StartWithWindows { get; set; }
@@ -23,9 +24,17 @@ internal sealed class BridgeSettings
     {
         EnableWin = true;
         EnableRightAlt = true;
+        EnableFileLogging = true;
         HoldMilliseconds = 520;
         InstallDirectory = DetectInstallDirectory();
         StartWithWindows = IsStartWithWindowsEnabled();
+    }
+
+    [OnDeserializing]
+    private void ReadDefaults(StreamingContext context)
+    {
+        // 旧配置没有此字段，沿用原有的日志开启行为。
+        EnableFileLogging = true;
     }
 
     public static BridgeSettings Load(Action<string> log)

@@ -45,6 +45,7 @@ internal static class VoiceWinBridge
     private static System.Threading.Timer beginRetryTimer;
     private static Thread logThread;
     private static volatile bool logStopping;
+    private static volatile bool fileLoggingEnabled = true;
     private static bool enabled = true;
     private static bool triggerHeld;
     private static bool triggerCombination;
@@ -61,6 +62,7 @@ internal static class VoiceWinBridge
 
     private static void StartLogWriter()
     {
+        if (!fileLoggingEnabled) return;
         try { System.IO.File.WriteAllText(LogPath, string.Empty); } catch { }
         logStopping = false;
         logThread = new Thread(LogWorker) { IsBackground = true, Name = "VoiceWinBridgeLog" };
@@ -77,6 +79,7 @@ internal static class VoiceWinBridge
 
     private static void Log(string message)
     {
+        if (!fileLoggingEnabled) return;
         try
         {
             lock (LogLock)
@@ -104,8 +107,12 @@ internal static class VoiceWinBridge
             {
                 try
                 {
-                    System.IO.File.AppendAllText(LogPath,
-                        String.Join(Environment.NewLine, lines) + Environment.NewLine);
+                    if (System.IO.File.Exists(LogPath) && new System.IO.FileInfo(LogPath).Length >= 1024 * 1024)
+                    {
+                        System.IO.File.Copy(LogPath, LogPath + ".1", true);
+                        System.IO.File.WriteAllText(LogPath, String.Empty);
+                    }
+                    System.IO.File.AppendAllText(LogPath, String.Join(Environment.NewLine, lines) + Environment.NewLine);
                 }
                 catch { }
             }
@@ -145,13 +152,15 @@ internal static class VoiceWinBridge
             if (!createdNew)
                 return;
 
+            settings = BridgeSettings.Load(Log);
+            fileLoggingEnabled = settings.EnableFileLogging;
+            if (!fileLoggingEnabled) lock (LogLock) LogQueue.Clear();
             StartLogWriter();
             Log("启动 VoiceWinBridge v" + AppIdentity.Version);
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            settings = BridgeSettings.Load(Log);
             previewOverlay = new VoicePreviewOverlay();
             IntPtr previewHandle = previewOverlay.Handle;
             voiceClient = new DoubaoVoiceClient(Log, settings.InstallDirectory, UpdatePreview);
@@ -272,6 +281,7 @@ internal static class VoiceWinBridge
             settings.EnableRightAlt = form.EnableRightAlt;
             settings.HoldMilliseconds = form.HoldMilliseconds;
             settings.StartWithWindows = form.StartWithWindows;
+            settings.EnableFileLogging = form.EnableFileLogging;
             bool restartRequired = !String.Equals(settings.InstallDirectory,
                 form.InstallDirectory, StringComparison.OrdinalIgnoreCase);
             settings.InstallDirectory = form.InstallDirectory;

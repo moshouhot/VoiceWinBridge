@@ -14,7 +14,7 @@ if ($LASTEXITCODE -ne 0) { throw 'Input-method guard tests failed.' }
 $smokeSource = Join-Path $root 'tests\ReleaseSmokeTests.cs'
 if (Test-Path -LiteralPath $smokeSource) {
     $smoke = Join-Path $out 'ReleaseSmokeTests.exe'
-    & $compiler /nologo /warnaserror+ /target:exe /reference:System.dll /reference:System.Drawing.dll /reference:System.Windows.Forms.dll "/out:$smoke" $smokeSource
+    & $compiler /nologo /warnaserror+ /target:exe /reference:System.Runtime.Serialization.dll /reference:System.dll /reference:System.Drawing.dll /reference:System.Windows.Forms.dll "/out:$smoke" $smokeSource
     if ($LASTEXITCODE -ne 0) { throw 'Release test compilation failed.' }
     & $smoke $ExecutablePath $out
     if ($LASTEXITCODE -ne 0) { throw 'Release smoke tests failed.' }

@@ -7,7 +7,7 @@
 ```
 
 - `InputMethodRestoreTests.cs`：13 项 profile 身份、恢复条件、SDK 标志和结构布局检查。
-- `ReleaseSmokeTests.cs`：读取实际产物的版本和图标，实例化设置窗口并生成 `artifacts/tests/settings-preview.png`；不调用语音、不修改登录自启。
+- `ReleaseSmokeTests.cs`：18 项版本、图标、日志开关兼容性、持久化及轮换检查；读取实际产物，并实例化设置窗口，生成 `artifacts/tests/settings-preview.png`；不调用语音、不修改登录自启。
 
 ## 跨进程现场对照
 

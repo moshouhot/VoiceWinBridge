@@ -7,6 +7,7 @@ internal sealed class SettingsForm : Form
     private readonly CheckBox winCheck;
     private readonly CheckBox rightAltCheck;
     private readonly CheckBox startupCheck;
+    private readonly CheckBox logCheck;
     private readonly NumericUpDown holdInput;
     private readonly TextBox directoryInput;
     private readonly Label directoryStatus;
@@ -14,6 +15,7 @@ internal sealed class SettingsForm : Form
     public bool EnableWin { get { return winCheck.Checked; } }
     public bool EnableRightAlt { get { return rightAltCheck.Checked; } }
     public bool StartWithWindows { get { return startupCheck.Checked; } }
+    public bool EnableFileLogging { get { return logCheck.Checked; } }
     public int HoldMilliseconds { get { return Decimal.ToInt32(holdInput.Value); } }
     public string InstallDirectory { get { return directoryInput.Text.Trim().TrimEnd('\\'); } }
 
@@ -40,6 +42,10 @@ internal sealed class SettingsForm : Form
         startupCheck = new CheckBox {
             AutoSize = true, Left = 24, Top = 57, Text = "开机自动启动（当前用户）",
             Checked = settings.StartWithWindows
+        };
+        logCheck = new CheckBox {
+            AutoSize = true, Left = 248, Top = 57, Text = "文件日志（重启后生效）",
+            Checked = settings.EnableFileLogging
         };
         var holdLabel = new Label {
             AutoSize = true, Left = 24, Top = 96, Text = "长按触发时间"
@@ -96,7 +102,7 @@ internal sealed class SettingsForm : Form
         };
 
         Controls.AddRange(new Control[] {
-            winCheck, rightAltCheck, startupCheck, holdLabel, holdInput, unitLabel, directoryLabel,
+            winCheck, rightAltCheck, startupCheck, logCheck, holdLabel, holdInput, unitLabel, directoryLabel,
             directoryInput, detectButton, browseButton, directoryStatus, okButton, cancelButton
         });
         AcceptButton = okButton;
