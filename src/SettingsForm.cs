@@ -19,7 +19,8 @@ internal sealed class SettingsForm : Form
 
     public SettingsForm(BridgeSettings settings)
     {
-        Text = "豆包语音桥接设置";
+        Text = "豆包语音桥接 v" + AppIdentity.Version + " · C#";
+        Icon = AppIdentity.Icon;
         FormBorderStyle = FormBorderStyle.FixedDialog;
         MaximizeBox = false;
         MinimizeBox = false;

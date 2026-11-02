@@ -146,7 +146,7 @@ internal static class VoiceWinBridge
                 return;
 
             StartLogWriter();
-            Log("启动");
+            Log("启动 VoiceWinBridge v" + AppIdentity.Version);
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
@@ -194,7 +194,7 @@ internal static class VoiceWinBridge
 
             trayIcon = new NotifyIcon
             {
-                Icon = SystemIcons.Information,
+                Icon = AppIdentity.Icon,
                 Text = BuildTrayText(),
                 ContextMenuStrip = menu,
                 Visible = true
